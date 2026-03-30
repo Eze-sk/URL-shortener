@@ -1,0 +1,79 @@
+import type { ShortenedURLType } from "@/typescript/DatabaseSchema";
+import { query } from "@db/connectionPg"
+import { logInternalError } from "./logInternalError";
+
+export type UrlGetType = {
+  id: string
+  original_url: string
+  expires_at: string | null
+} | null
+
+export class urlResourceModel {
+  static async create({ data }: { data: ShortenedURLType }) {
+    try {
+      const { original_url, short_url, expires_at } = data
+
+      const result = await query(
+        "INSERT INTO url_data (original_url, short_url, expires_at) VALUES ($1, $2, $3) RETURNING *",
+        [original_url, short_url, expires_at]
+      )
+
+      return result.rows[0]
+    } catch (err) {
+      await logInternalError.create({ err, context: "URL_MODEL_CREATE" })
+      throw new Error('Could not create shortened URL')
+    }
+  }
+
+  static async update({ data }: { data: ShortenedURLType }) {
+    try {
+      const { original_url, short_url } = data
+
+      const result = await query(
+        "UPDATE url_data SET original_url=$1 WHERE short_url=$2 RETURNING *",
+        [original_url, short_url]
+      )
+
+      if (result.rows.length === 0) return null
+
+      return result.rows[0]
+    } catch (err) {
+      await logInternalError.create({ err, context: "URL_MODEL_UPDATE" })
+      throw new Error('The shortened URL could not be updated.')
+    }
+  }
+
+  static async delete({ short_url }: { short_url: string }) {
+    try {
+      const result = await query(
+        "DELETE FROM url_data WHERE short_url=$1",
+        [short_url]
+      )
+
+      if (result.rows.length === 0) return null
+    } catch (err) {
+      await logInternalError.create({ err, context: "URL_MODEL_DELETE" })
+      throw new Error('The shortened URL could not be removed')
+    }
+  }
+
+  static async get({ short_url }: { short_url: string }): Promise<UrlGetType> {
+    try {
+      const result = await query(
+        `SELECT id, original_url, expires_at FROM url_data WHERE short_url = $1 LIMIT 1;`,
+        [short_url]
+      )
+
+      if (result.rows.length === 0) return null
+
+      return {
+        id: result.rows[0].id ?? "",
+        original_url: result.rows[0].original_url ?? "",
+        expires_at: result.rows[0].expires_at ?? null
+      }
+    } catch (err) {
+      await logInternalError.create({ err, context: "URL_MODEL_GET" })
+      throw new Error('The shortened URL could not be obtained.')
+    }
+  }
+}
