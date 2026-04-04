@@ -1,0 +1,16 @@
+{
+  "name": "@repo/schemes",
+  "module": "index.js",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "dependencies": {
+    "zod": "4.3.6"
+  }
+}
