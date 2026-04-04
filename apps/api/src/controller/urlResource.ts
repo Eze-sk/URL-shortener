@@ -4,6 +4,7 @@ import type { Request, Response } from 'express';
 import { logInternalError } from "@model/logInternalError";
 import type { ShortenedURLType } from "@/typescript/DatabaseSchema";
 import { verifyUrl } from "@/utils/verifyUrl";
+import { urlScheme } from "@repo/schemes"
 
 export class urlResourceController {
   static async create(req: Request, res: Response) {
@@ -11,6 +12,12 @@ export class urlResourceController {
 
     if (!original_url) {
       return res.status(400).json({ error: 'The original URL is required.' });
+    }
+
+    const urlValidation = urlScheme.safeParse(original_url)
+
+    if (!urlValidation.success) {
+      return res.status(422).json({ error: 'The correct URL is required.' });
     }
 
     try {
@@ -40,7 +47,7 @@ export class urlResourceController {
 
       return res.status(201).json({
         mensaje: 'Shortened URL created successfully',
-        data: resultCreatingURL,
+        resultCreatingURL,
       })
     } catch (err) {
       logInternalError.create({ err, context: "URL_CONTROLLER_CREATE" })

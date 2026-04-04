@@ -6,3 +6,5 @@ export const PASSWORD_REDIS = process.env.PASSWORD_REDIS
 export const PORT_REDIS = Number(process.env.PORT_REDIS)
 
 export const PORT = process.env.PORT || 3000
+
+export const ORIGIN_URL = process.env.ORIGIN_URL
