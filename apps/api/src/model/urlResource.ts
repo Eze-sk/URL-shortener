@@ -1,6 +1,8 @@
-import type { ShortenedURLType } from "@/typescript/DatabaseSchema";
-import { query } from "@db/connectionPg"
+import { query } from "@db/connectionPg";
+
 import { logInternalError } from "./logInternalError";
+
+import type { ShortenedURLType } from "@/typescript/DatabaseSchema";
 
 export type UrlGetType = {
   id: string

@@ -1,4 +1,5 @@
 import { query } from "@db/connectionPg";
+
 import { logInternalError } from "./logInternalError";
 
 export class urlAnalyticsModel {

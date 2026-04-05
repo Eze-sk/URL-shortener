@@ -1,9 +1,9 @@
+import geoip from "geoip-lite";
+import { isPast } from "date-fns";
+import type { Request, Response } from "express";
 import { redisClient } from "@db/connectionRedis";
 import { logInternalError } from "@model/logInternalError";
 import { urlResourceModel, type UrlGetType } from "@model/urlResource";
-import { isPast } from "date-fns";
-import type { Request, Response } from "express";
-import geoip from "geoip-lite"
 
 interface NavParams {
   shortId: string
@@ -50,7 +50,10 @@ export async function navigationController(req: Request<NavParams>, res: Respons
       return res.status(410).json({ error: 'This link has expired and is no longer available.' });
     }
 
-    const worker = new Worker(new URL("../worker/analytics.ts", import.meta.url).href);
+    const worker = new Worker(
+      new URL("../worker/analytics.ts", import.meta.url).href,
+      { type: "module" }
+    );
 
     worker.postMessage(
       {

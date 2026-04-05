@@ -1,6 +1,7 @@
-import { SAFE_BROWSING_API_KEY } from "@/consts/config";
-import { logInternalError } from "@model/logInternalError";
 import axios from "axios";
+import { logInternalError } from "@model/logInternalError";
+
+import { SAFE_BROWSING_API_KEY } from "@/consts/config";
 
 export async function verifyUrl({ url }: { url: string }) {
   try {

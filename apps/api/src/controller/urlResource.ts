@@ -1,10 +1,10 @@
-import { urlResourceModel } from "@model/urlResource";
 import { nanoid } from "nanoid";
+import { urlScheme } from "@repo/schemes";
+import { verifyUrl } from "@utils/verifyUrl";
 import type { Request, Response } from 'express';
+import { urlResourceModel } from "@model/urlResource";
 import { logInternalError } from "@model/logInternalError";
-import type { ShortenedURLType } from "@/typescript/DatabaseSchema";
-import { verifyUrl } from "@/utils/verifyUrl";
-import { urlScheme } from "@repo/schemes"
+import type { ShortenedURLType } from "@typescript/DatabaseSchema";
 
 export class urlResourceController {
   static async create(req: Request, res: Response) {

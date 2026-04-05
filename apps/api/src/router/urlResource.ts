@@ -1,5 +1,5 @@
-import { urlResourceController } from "@controller/urlResource"
-import express from "express"
+import express from "express";
+import { urlResourceController } from "@controller/urlResource";
 
 const urlResourceRouter = express.Router()
 
