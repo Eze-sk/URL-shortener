@@ -7,4 +7,12 @@ export const PORT_REDIS = Number(process.env.PORT_REDIS)
 
 export const PORT = process.env.PORT || 3000
 
-export const ORIGIN_URL = process.env.ORIGIN_URL
+export const BASE_URL = process.env.BASE_URL
+
+export const AUTH_SECRET = process.env.AUTH_SECRET
+
+export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
+export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
+
+export const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
+export const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
