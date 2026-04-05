@@ -1,7 +1,12 @@
 {
   "compilerOptions": {
     // Environment setup & latest features
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext",
+      "DOM",        
+      "DOM.Iterable"
+    ],
+    "types": ["bun"],
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",
@@ -26,12 +31,15 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
 
-    "baseUrl": ".",
     "paths": {
+      "@consts/*": ["./src/consts/*"],
       "@controller/*": ["./src/controller/*"],
       "@db/*": ["./src/db/*"],
+      "@libs/*": ["./src/libs/*"],
       "@model/*": ["./src/model/*"],
       "@router/*": ["./src/router/*"],
+      "@typescript/*": ["./src/typescript/*"],
+      "@utils/*": ["./src/utils/*"],
       "@/*": ["./src/*"]
     }
   }
