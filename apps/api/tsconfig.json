@@ -38,6 +38,7 @@
       "@libs/*": ["./src/libs/*"],
       "@model/*": ["./src/model/*"],
       "@router/*": ["./src/router/*"],
+      "@schema/*": ["./src/schema/*"],
       "@typescript/*": ["./src/typescript/*"],
       "@utils/*": ["./src/utils/*"],
       "@/*": ["./src/*"]
