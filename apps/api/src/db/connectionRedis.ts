@@ -1,6 +1,6 @@
-import { PASSWORD_REDIS, HOST_REDIS, PORT_REDIS } from "@/consts/config"
-import { logInternalError } from "@model/logInternalError"
-import { createClient } from "redis"
+import { createClient } from "redis";
+import { logInternalError } from "@model/logInternalError";
+import { PASSWORD_REDIS, HOST_REDIS, PORT_REDIS } from "@consts/config";
 
 export const redisClient = createClient({
   username: 'default',
@@ -11,8 +11,8 @@ export const redisClient = createClient({
   }
 });
 
-redisClient.on("error", err => {
-  console.error('Redis Client Error:', err)
+redisClient.on("error", async (err) => {
+  await logInternalError.create({ err, context: "REDIS_CLIENT_ERROR" })
 })
 
 export async function connectionRedis() {
