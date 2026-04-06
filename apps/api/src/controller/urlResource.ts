@@ -35,11 +35,11 @@ export class urlResourceController {
         })
       }
 
-      const shortenedURL = nanoid(7)
+      const slug = nanoid(7)
 
       const data: ShortenedURLType = {
         original_url,
-        short_url: shortenedURL,
+        slug,
         expires_at
       }
 
@@ -56,9 +56,9 @@ export class urlResourceController {
   }
 
   static async update(req: Request, res: Response) {
-    const { original_url, short_url } = req.body
+    const { original_url, slug } = req.body
 
-    if (!original_url || !short_url) {
+    if (!original_url || !slug) {
       return res.status(400).json({ error: 'The original URL and the short URL are required.' })
     }
 
@@ -79,7 +79,7 @@ export class urlResourceController {
 
       const data: ShortenedURLType = {
         original_url,
-        short_url
+        slug
       }
 
       const resultUpdateURL = await urlResourceModel.update({ data })
@@ -96,20 +96,20 @@ export class urlResourceController {
 
   static async delete(req: Request, res: Response) {
     try {
-      const { short_url } = req.body
+      const { slug } = req.body
 
-      if (!short_url) {
-        return res.status(400).json({ error: 'The short_url is required.' })
+      if (!slug) {
+        return res.status(400).json({ error: 'The slug is required.' })
       }
 
-      let formattedURL = short_url
+      let formattedURL = slug
 
-      if (short_url.includes("https://")) {
-        formattedURL = short_url.split('/').pop()
+      if (slug.includes("https://")) {
+        formattedURL = slug.split('/').pop()
       }
 
       await urlResourceModel.delete({
-        short_url: formattedURL
+        slug: formattedURL
       })
 
       return res.status(200).json({

@@ -10,9 +10,9 @@ interface NavParams {
 }
 
 export async function navigationController(req: Request<NavParams>, res: Response) {
-  const short_url: string = req.params.shortId
+  const slug: string = req.params.shortId
 
-  if (!short_url) {
+  if (!slug) {
     return res.status(404).json({ error: 'The page was not found.' })
   }
 
@@ -26,7 +26,7 @@ export async function navigationController(req: Request<NavParams>, res: Respons
 
   const referer = req.get('Referer') || 'Directo';
 
-  const cacheKey = `url:${short_url}`
+  const cacheKey = `url:${slug}`
 
   try {
 
@@ -36,7 +36,7 @@ export async function navigationController(req: Request<NavParams>, res: Respons
     if (cached) {
       result = JSON.parse(cached)
     } else {
-      result = await urlResourceModel.get({ short_url })
+      result = await urlResourceModel.get({ slug })
 
       if (!result) {
         return res.status(404).json({ error: 'The page was not found.' })
@@ -46,7 +46,7 @@ export async function navigationController(req: Request<NavParams>, res: Respons
     }
 
     if (result?.expires_at && isPast(new Date(result?.expires_at))) {
-      await urlResourceModel.delete({ short_url })
+      await urlResourceModel.delete({ slug })
       return res.status(410).json({ error: 'This link has expired and is no longer available.' });
     }
 

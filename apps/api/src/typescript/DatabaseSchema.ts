@@ -1,5 +1,5 @@
 export interface ShortenedURLType {
-  original_url: string
-  short_url: string
+  original_url?: string
+  slug?: string
   expires_at?: Date
 }

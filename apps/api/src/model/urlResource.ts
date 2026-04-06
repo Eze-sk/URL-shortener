@@ -13,11 +13,11 @@ export type UrlGetType = {
 export class urlResourceModel {
   static async create({ data }: { data: ShortenedURLType }) {
     try {
-      const { original_url, short_url, expires_at } = data
+      const { original_url, slug, expires_at } = data
 
       const result = await query(
-        "INSERT INTO url_data (original_url, short_url, expires_at) VALUES ($1, $2, $3) RETURNING *",
-        [original_url, short_url, expires_at]
+        "INSERT INTO url_data (original_url, slug, expires_at) VALUES ($1, $2, $3) RETURNING *",
+        [original_url, slug, expires_at]
       )
 
       return result.rows[0]
@@ -29,11 +29,11 @@ export class urlResourceModel {
 
   static async update({ data }: { data: ShortenedURLType }) {
     try {
-      const { original_url, short_url } = data
+      const { original_url, slug } = data
 
       const result = await query(
-        "UPDATE url_data SET original_url=$1 WHERE short_url=$2 RETURNING *",
-        [original_url, short_url]
+        "UPDATE url_data SET original_url=$1 WHERE slug=$2 RETURNING *",
+        [original_url, slug]
       )
 
       if (result.rows.length === 0) return null
@@ -45,11 +45,11 @@ export class urlResourceModel {
     }
   }
 
-  static async delete({ short_url }: { short_url: string }) {
+  static async delete({ slug }: { slug: string }) {
     try {
       const result = await query(
-        "DELETE FROM url_data WHERE short_url=$1",
-        [short_url]
+        "DELETE FROM url_data WHERE slug=$1",
+        [slug]
       )
 
       if (result.rows.length === 0) return null
@@ -59,11 +59,11 @@ export class urlResourceModel {
     }
   }
 
-  static async get({ short_url }: { short_url: string }): Promise<UrlGetType> {
+  static async get({ slug }: { slug: string }): Promise<UrlGetType> {
     try {
       const result = await query(
-        `SELECT id, original_url, expires_at FROM url_data WHERE short_url = $1 LIMIT 1;`,
-        [short_url]
+        `SELECT id, original_url, expires_at FROM url_data WHERE slug = $1 LIMIT 1;`,
+        [slug]
       )
 
       if (result.rows.length === 0) return null
