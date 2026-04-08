@@ -1,0 +1,72 @@
+---
+import Logo from "@components/astro/ui/Logo.astro";
+import { AuthControl } from "@components/preact/auth/AuthButton.tsx";
+import AuthControlSkeleton from "@components/astro/skeleton/AuthControlSkeleton.astro";
+
+const session = Astro.locals.session;
+---
+
+<header class="my-2 mx-6 flex justify-between items-center">
+  <div class="flex-1">
+    <Logo />
+  </div>
+
+  <nav class="flex-1 flex justify-center">
+    <ul class="flex items-center gap-6">
+      <li><a href="https://github.com/Eze-sk">Github</a></li>
+      <li>
+        <a href="" class="flex items-center gap-1">
+          <span>Support</span>
+          <svg
+            width="24"
+            height="24"
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path stroke="none" d="M0 0h24v24H0z"></path>
+            <path
+              d="M19.5 12.572 12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.572"
+            ></path>
+          </svg>
+        </a>
+      </li>
+      <li>
+        <button>Dark mode</button>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="flex-1 flex justify-end items-center gap-4">
+    {
+      session ? (
+        <a
+          href=""
+          class="bg-black text-white rounded py-2 px-4 flex gap-2 items-center"
+        >
+          Dashboard
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            >
+            <path
+              fill-rule="evenodd"
+              d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"
+            />
+            <path
+              fill-rule="evenodd"
+              d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"
+            />
+          </svg>
+        </a>
+      ) : (
+        <AuthControl client:only="preact">
+          <AuthControlSkeleton slot="fallback" />
+        </AuthControl>
+      )
+    }
+  </div>
+</header>

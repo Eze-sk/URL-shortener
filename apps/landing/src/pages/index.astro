@@ -1,0 +1,16 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Hero from "@components/astro/layout/Hero.astro";
+---
+
+<Layout>
+  <Hero />
+</Layout>
+
+<script>
+  import { WCToast } from "@components/wc/Toast.ts";
+  import { WCAnimateSpin } from "@components/wc/AnimateSpin.ts";
+
+  customElements.define("ws-toast", WCToast);
+  customElements.define("ws-animate-spin", WCAnimateSpin);
+</script>

@@ -1,0 +1,45 @@
+@import "tailwindcss";
+@import "flowbite/src/themes/default";
+
+:root {
+  --active: var(--color-blue-700)
+}
+
+body {
+  font-family: 'Space Grotesk Variable', sans-serif;
+}
+
+h1, h2, h3 {
+  font-family: 'Michroma', sans-serif;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+button {
+  cursor: pointer;
+}
+
+.activeButton:active {
+  transition: 200ms;
+  transform: scale(0.9);
+}
+
+.group:active {
+  .activeButton {
+    transition: 200ms;
+    transform: scale(0.9);
+  }
+}
+
+.custom-input {
+    border: none;
+    border-bottom: 1px solid black;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+
+  .custom-input:focus {
+    border-bottom-color: var(--active);
+  }

@@ -1,0 +1,111 @@
+<div
+  class="absolute right-0 -top-2 closeCalendar border
+    border-gray-300 bg-white rounded-[.76rem] overflow-hidden"
+  id="calendarContainer"
+>
+  <div id="calendar"></div>
+</div>
+
+<style>
+  .closeCalendar {
+    display: none;
+  }
+</style>
+
+<script>
+  import "vanilla-calendar-pro/styles/index.css";
+  import { format, isToday, parse } from "date-fns";
+  import { Calendar, type Options } from "vanilla-calendar-pro";
+
+  const $calActionsWrapper = document.querySelector(".calendarActionsWrapper" ) as HTMLElement;
+  const $expirationDate = document.getElementById("expirationDate") as HTMLElement;
+
+  const $btOpenMenu = document.getElementById("btOpenMenu") as HTMLButtonElement;
+  const $calendarMenu = document.getElementById("calendarContainer") as HTMLDivElement;
+
+  const $dateWrapper = document.querySelector(".dateWrapper")
+
+  const options: Options = {
+    selectionTimeMode: 12,
+    selectedTheme: "light",
+    onClickDate(self) {
+      const dateStr = self.context.selectedDates.join();
+      sessionStorage.setItem("expirationDate", dateStr);
+      calendarAction();
+    },
+    onChangeTime(self) {
+      const timeStr = self.context.selectedTime;
+      sessionStorage.setItem("expirationTime", timeStr);
+      calendarAction();
+    },
+  };
+
+  function calendarAction() {
+    $calActionsWrapper.style.color = "var(--active)";
+    $dateWrapper.classList.remove("deactivateDate")
+
+    const dateStr = sessionStorage.getItem("expirationDate");
+    const timeStr = sessionStorage.getItem("expirationTime");
+
+    if (!dateStr || !timeStr) return;
+
+    const fullDateTimeStr = `${dateStr} ${timeStr}`;
+
+    const expirationDateObj = parse(
+      fullDateTimeStr,
+      "yyyy-MM-dd hh:mm a",
+      new Date(),
+    );
+
+    const isoString = format(expirationDateObj, "yyyy-MM-dd'T'HH:mm:ss");
+    $expirationDate.setAttribute("datetime", isoString);
+    sessionStorage.setItem("isoExpirationTime", isoString)
+
+    if (isToday(expirationDateObj)) {
+      $expirationDate.textContent = `Expires at ${timeStr}`;
+    } else {
+      const formattedDate = format(expirationDateObj, "MMM d");
+      $expirationDate.textContent = `Expires on ${formattedDate}`;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const calendar = new Calendar("#calendar", options);
+    calendar.init();
+  });
+
+  let isOpen = false;
+
+  $btOpenMenu.addEventListener("click", () => {
+    const rectBt = $btOpenMenu.getBoundingClientRect();
+
+    const windowHeight = window.innerHeight;
+
+    const spaceBelow = rectBt.bottom - windowHeight;
+    const menuHeight = 200;
+
+    if (spaceBelow < menuHeight) {
+      $calendarMenu.style.bottom = "100%";
+      $calendarMenu.style.top = "auto";
+    } else {
+      $calendarMenu.style.top = "100%";
+      $calendarMenu.style.bottom = "auto";
+    }
+
+    if (isOpen) {
+      $calendarMenu.classList.add("closeCalendar");
+    } else {
+      $calendarMenu.classList.remove("closeCalendar");
+    }
+
+    isOpen = !isOpen;
+  });
+
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    if (!$calendarMenu.contains(target) && !$btOpenMenu.contains(target)) {
+      $calendarMenu.classList.add("closeCalendar");
+      isOpen = false;
+    }
+  });
+</script>

@@ -1,0 +1,102 @@
+---
+import DatePickert from "./DatePickert.astro";
+---
+
+<ul class="flex gap-4 mt-1 items-center calendarActionsWrapper">
+  <li class="relative">
+    <div class="flex gap-1 items-center">
+      <div class="flex gap-1 items-center dateWrapper deactivateDate">
+        <time datetime="2026-04-30" class="text-sm" id="expirationDate"
+          >Expires on April 30th</time
+        >
+        <button id="removeExpiration" title="remove date">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path
+              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"
+            ></path>
+          </svg>
+        </button>
+      </div>
+      <button
+        class="flex items-center activeButton opacity-90 hover:opacity-100 transition-opacity"
+        id="btOpenMenu"
+        title="Add expiration date to the URL"
+      >
+        <svg
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z"></path>
+          <path
+            d="M10.5 21H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3M16 3v4M8 3v4M4 11h10"
+          ></path>
+          <path d="M14 18a4 4 0 1 0 8 0 4 4 0 1 0-8 0"></path>
+          <path d="M18 16.5V18l.5.5"></path>
+        </svg>
+      </button>
+    </div>
+    <DatePickert />
+  </li>
+  <li>
+    <button
+      class="bg-black text-white rounded py-1 px-2 cursor-pointer text-sm activeButton"
+    >
+      Save
+    </button>
+  </li>
+</ul>
+
+<style>
+  .deactivateDate {
+    display: none;
+  }
+</style>
+
+<script>
+  const $removeExpiration = document.getElementById(
+    "removeExpiration",
+  ) as HTMLButtonElement;
+
+  const $dateWrapper = document.querySelector(".dateWrapper") as HTMLElement
+  const $calActionsWrapper = document.querySelector(".calendarActionsWrapper" ) as HTMLElement;
+
+  $removeExpiration.addEventListener("click", () => {
+    sessionStorage.removeItem("expirationDate");
+    sessionStorage.removeItem("expirationTime");
+    $dateWrapper.classList.add("deactivateDate")
+    $calActionsWrapper.style.color = "#000";
+  });
+
+  const convertInput = ({ id }: { id: string }) => {
+    const $element = document.getElementById(id) as HTMLElement;
+
+    if ($element) {
+      const newInput = document.createElement("input");
+
+      newInput.value = $element.innerText;
+      newInput.id = $element.id;
+
+      newInput.style.maxWidth = "6.25rem";
+      newInput.style.boxSizing = "content-box";
+
+      newInput.classList.add("custom-input");
+
+      const updateWidth = () => {
+        newInput.style.width = "0px";
+        newInput.style.width = `${newInput.scrollWidth}px`;
+      };
+
+      newInput.addEventListener("input", updateWidth);
+
+      $element.replaceWith(newInput);
+      updateWidth();
+    }
+  };
+
+  convertInput({ id: "domain" });
+  convertInput({ id: "slug" });
+</script>
