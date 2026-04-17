@@ -36,6 +36,7 @@
       "@controller/*": ["./src/controller/*"],
       "@db/*": ["./src/db/*"],
       "@libs/*": ["./src/libs/*"],
+      "@middleware/*": ["./src/middleware/*"],
       "@model/*": ["./src/model/*"],
       "@router/*": ["./src/router/*"],
       "@schema/*": ["./src/schema/*"],
