@@ -10,6 +10,8 @@ import { ORIGIN_URL, PORT } from "@consts/config";
 import { generalLimiter } from "@/rateLimit";
 
 import { urlResourceRouter } from "@/router/urlResource";
+import { userSessionMiddleware } from "@middleware/userSession";
+import { protectFieldsMiddleware } from "@middleware/protectFields";
 
 await connectionRedis()
 
@@ -17,7 +19,7 @@ const app = express()
 
 app.use(cors({
   origin: ORIGIN_URL,
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true,
   optionsSuccessStatus: 200
 }))
@@ -28,7 +30,9 @@ app.use(generalLimiter)
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
-app.use("/api/url-shortener", urlResourceRouter)
+app.use(userSessionMiddleware)
+
+app.use("/api/url-shortener", protectFieldsMiddleware, urlResourceRouter)
 app.use("/:shortId", navigationController)
 
 app.set('trust proxy', 1);

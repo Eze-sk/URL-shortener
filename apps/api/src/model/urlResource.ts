@@ -13,12 +13,18 @@ export type UrlGetType = {
 export class urlResourceModel {
   static async create({ data }: { data: ShortenedURLType }) {
     try {
-      const { original_url, slug, expires_at } = data
+      const { original_url, slug, user_id } = data
 
       const result = await query(
-        "INSERT INTO url_data (original_url, slug, expires_at) VALUES ($1, $2, $3) RETURNING *",
-        [original_url, slug, expires_at]
+        `
+          INSERT INTO url_data (original_url, slug, user_id)
+          VALUES ($1, $2, $3)
+          RETURNING *
+        `,
+        [original_url, slug, user_id]
       )
+
+      if (result.rows.length === 0) return null
 
       return result.rows[0]
     } catch (err) {
@@ -29,11 +35,27 @@ export class urlResourceModel {
 
   static async update({ data }: { data: ShortenedURLType }) {
     try {
-      const { original_url, slug } = data
+      const { old_slug, original_url, user_id, slug, expires_at } = data
 
       const result = await query(
-        "UPDATE url_data SET original_url=$1 WHERE slug=$2 RETURNING *",
-        [original_url, slug]
+        /*sql*/`
+          UPDATE url_data 
+          SET 
+            slug = $1, 
+            original_url = $2, 
+            expires_at = $3,
+            updated_at = CURRENT_TIMESTAMP
+          WHERE slug = $4 
+            AND user_id = $5
+          RETURNING *;
+        `,
+        [
+          slug,
+          original_url,
+          expires_at,
+          old_slug,
+          user_id
+        ]
       )
 
       if (result.rows.length === 0) return null
