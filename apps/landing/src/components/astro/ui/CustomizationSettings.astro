@@ -6,9 +6,7 @@ import DatePickert from "./DatePickert.astro";
   <li class="relative">
     <div class="flex gap-1 items-center">
       <div class="flex gap-1 items-center dateWrapper deactivateDate">
-        <time datetime="2026-04-30" class="text-sm" id="expirationDate"
-          >Expires on April 30th</time
-        >
+        <time datetime="2026-04-30" class="text-sm" id="expirationDate"></time>
         <button id="removeExpiration" title="remove date">
           <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
             <path
@@ -44,6 +42,9 @@ import DatePickert from "./DatePickert.astro";
   <li>
     <button
       class="bg-black text-white rounded py-1 px-2 cursor-pointer text-sm activeButton"
+      type="submit"
+      name="save"
+      id="save"
     >
       Save
     </button>
@@ -57,17 +58,95 @@ import DatePickert from "./DatePickert.astro";
 </style>
 
 <script>
+  import { toast } from "@components/wc/Toast.ts";
+  import { customData } from "@repo/schemes";
+  import { ENDPOINT } from "@consts/config";
+  import { api } from "@lib/api.ts";
+
   const $removeExpiration = document.getElementById(
     "removeExpiration",
   ) as HTMLButtonElement;
 
-  const $dateWrapper = document.querySelector(".dateWrapper") as HTMLElement
-  const $calActionsWrapper = document.querySelector(".calendarActionsWrapper" ) as HTMLElement;
+  const $dateWrapper = document.querySelector(".dateWrapper") as HTMLElement;
+  const $calActionsWrapper = document.querySelector(
+    ".calendarActionsWrapper",
+  ) as HTMLElement;
+
+  const $formShorten = document.getElementById(
+    "formShorten",
+  ) as HTMLFormElement;
+
+  $formShorten.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const buttonPress = event.submitter as HTMLButtonElement;
+
+    if (!buttonPress || buttonPress.id !== "save") return;
+
+    const generatedSlug = sessionStorage.getItem("slug");
+
+    if (!generatedSlug) {
+      toast({
+        message: "You need to create a short URL to edit it",
+        position: "bottom-center",
+        type: "info",
+      });
+      return;
+    }
+
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const newSlug = formData.get("slug");
+
+    let newOriginalUrl = formData.get("originalUrl");
+    const oldOriginalUrl = sessionStorage.getItem("originalUrl");
+
+    if (newSlug === generatedSlug || newSlug === "my-link") return;
+    if (newOriginalUrl === oldOriginalUrl || !newOriginalUrl) newOriginalUrl = oldOriginalUrl;
+
+    const data = {
+      original_url: newOriginalUrl,
+      slug: newSlug,
+      expires_at: sessionStorage.getItem("isoExpirationTime") ?? undefined,
+    };
+
+    const verifyCustom = customData.safeParse(data);
+
+    if (!verifyCustom.success) {
+      toast({
+        message: verifyCustom.error!.issues[0].message,
+        position: "bottom-center",
+        type: "error",
+      });
+      return;
+    }
+
+    try {
+      const { data: { data: urlData, message } } = await api.patch(`${ENDPOINT.update}/${generatedSlug}`, verifyCustom.data);
+
+      sessionStorage.setItem("slug", urlData.slug);
+      sessionStorage.setItem("originalUrl", urlData.original_url);
+
+      toast({
+        message,
+        position: "bottom-center",
+        type: "success",
+      });
+    } catch (err) {
+      console.error(err);
+      toast({
+        message: `Server error: ${err}`,
+        position: "bottom-center",
+        type: "error",
+      });
+    }
+  });
 
   $removeExpiration.addEventListener("click", () => {
     sessionStorage.removeItem("expirationDate");
     sessionStorage.removeItem("expirationTime");
-    $dateWrapper.classList.add("deactivateDate")
+    sessionStorage.removeItem("isoExpirationTime");
+    $dateWrapper.classList.add("deactivateDate");
     $calActionsWrapper.style.color = "#000";
   });
 
@@ -78,9 +157,11 @@ import DatePickert from "./DatePickert.astro";
       const newInput = document.createElement("input");
 
       newInput.value = $element.innerText;
+      newInput.name = $element.id;
       newInput.id = $element.id;
 
       newInput.style.maxWidth = "6.25rem";
+      newInput.style.minWidth = "0.875rem";
       newInput.style.boxSizing = "content-box";
 
       newInput.classList.add("custom-input");
@@ -97,6 +178,5 @@ import DatePickert from "./DatePickert.astro";
     }
   };
 
-  convertInput({ id: "domain" });
   convertInput({ id: "slug" });
 </script>

@@ -17,13 +17,21 @@
   import { format, isToday, parse } from "date-fns";
   import { Calendar, type Options } from "vanilla-calendar-pro";
 
-  const $calActionsWrapper = document.querySelector(".calendarActionsWrapper" ) as HTMLElement;
-  const $expirationDate = document.getElementById("expirationDate") as HTMLElement;
+  const $calActionsWrapper = document.querySelector(
+    ".calendarActionsWrapper",
+  ) as HTMLElement;
+  const $expirationDate = document.getElementById(
+    "expirationDate",
+  ) as HTMLElement;
 
-  const $btOpenMenu = document.getElementById("btOpenMenu") as HTMLButtonElement;
-  const $calendarMenu = document.getElementById("calendarContainer") as HTMLDivElement;
+  const $btOpenMenu = document.getElementById(
+    "btOpenMenu",
+  ) as HTMLButtonElement;
+  const $calendarMenu = document.getElementById(
+    "calendarContainer",
+  ) as HTMLDivElement;
 
-  const $dateWrapper = document.querySelector(".dateWrapper")
+  const $dateWrapper = document.querySelector(".dateWrapper") as HTMLDivElement;
 
   const options: Options = {
     selectionTimeMode: 12,
@@ -42,7 +50,7 @@
 
   function calendarAction() {
     $calActionsWrapper.style.color = "var(--active)";
-    $dateWrapper.classList.remove("deactivateDate")
+    $dateWrapper.classList.remove("deactivateDate");
 
     const dateStr = sessionStorage.getItem("expirationDate");
     const timeStr = sessionStorage.getItem("expirationTime");
@@ -57,9 +65,9 @@
       new Date(),
     );
 
-    const isoString = format(expirationDateObj, "yyyy-MM-dd'T'HH:mm:ss");
+    const isoString = format(expirationDateObj, "yyyy-MM-dd'T'HH:mm:ss'Z'");
     $expirationDate.setAttribute("datetime", isoString);
-    sessionStorage.setItem("isoExpirationTime", isoString)
+    sessionStorage.setItem("isoExpirationTime", isoString);
 
     if (isToday(expirationDateObj)) {
       $expirationDate.textContent = `Expires at ${timeStr}`;
