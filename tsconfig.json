@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@repo/schemes": ["./packages/schemes/index.ts"] 
     }
