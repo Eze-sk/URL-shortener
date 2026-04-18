@@ -74,8 +74,8 @@ export default function AuthForm({
     }
 
     setIsLoading(false)
-
     onClose()
+    window.location.reload()
   }
 
   return (
