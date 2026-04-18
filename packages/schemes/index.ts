@@ -8,20 +8,20 @@ export const urlScheme = z
 export type urlSchemeType = z.infer<typeof urlScheme>
 
 export const customData = z.object({
-  domain: z
-    .string()
-    .min(4, "The domain must be at least 4 characters long.")
-    .max(61, "The domain name must not exceed 31 characters.")
-    .regex(
-      /^[a-z0-9-]{2,}\.[a-z]{2,}$/i,
-      "The domain must be valid."
-    ),
+  original_url: urlScheme
+    .or(z.literal("")),
   slug: z
-    .string()
+    .string("It must be a valid slug")
     .min(2, "The slug must have at least 2 character.")
-    .max(50, "The slug has a maximum of 50 characters."),
-  expiration: z.iso.datetime()
+    .max(50, "The slug has a maximum of 50 characters.")
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use only lowercase letters, numbers, and hyphens (no double or trailing hyphens)."),
+  expires_at: z.iso
+    .datetime("The expiration date must be in a valid ISO format.")
+    .optional()
+    .nullable()
 })
+
+export type CustomDataType = z.infer<typeof customData>
 
 export const loginScheme = z.object({
   email: z
