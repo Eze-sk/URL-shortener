@@ -9,50 +9,48 @@ const session = Astro.locals.session;
 <section class="mt-10 flex flex-col">
   <form id="formShorten">
     <div class="flex gap-4 items-center">
-      <div class="flex gap-4 items-center">
-        <div class="flex flex-col">
-          <label for="originalUrl" class="text-ms font-light"
-            >Your long url:</label
-          >
-          <input
-            type="text"
-            name="originalUrl"
-            id="originalUrl"
-            placeholder="Paste your long URL here"
-            class="rounded py-2 px-2 border border-black w-75"
-          />
-        </div>
-
-        <button
-          type="submit"
-          name="shortenBt"
-          id="shortenBt"
-          class="bg-black text-white py-2.25 px-4 rounded flex items-center justify-center
-            gap-1 self-end font-bold min-w-30.5 max-h-10.5 h-full activeButton"
+      <div class="flex flex-col">
+        <label for="originalUrl" class="text-ms font-light"
+          >Your long url:</label
         >
-          <span class="shortenBt-text">Shorten</span>
-          <svg
-            class="shortenBt-svg"
-            width="24"
-            height="24"
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-          >
-            <path stroke="none" d="M0 0h24v24H0z"></path>
-            <path d="M5 12h14M15 16l4-4M15 8l4 4"></path>
-          </svg>
-        </button>
+        <input
+          type="text"
+          name="originalUrl"
+          id="originalUrl"
+          placeholder="Paste your long URL here"
+          class="rounded py-2 px-2 border border-black w-75"
+        />
       </div>
+
+      <button
+        type="submit"
+        name="shortenBt"
+        id="shortenBt"
+        class="bg-black text-white py-2.25 px-4 rounded flex items-center justify-center
+          gap-1 self-end font-bold min-w-30.5 max-h-10.5 h-full activeButton"
+      >
+        <span class="shortenBt-text">Shorten</span>
+        <svg
+          class="shortenBt-svg"
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        >
+          <path stroke="none" d="M0 0h24v24H0z"></path>
+          <path d="M5 12h14M15 16l4-4M15 8l4 4"></path>
+        </svg>
+      </button>
 
       <div class="flex flex-col group">
         <span class="text-ms font-light">Your short link:</span>
         <span
           class="rounded py-2 px-2 border border-black relative flex items-center w-75"
         >
-          <label for="slug" class="sr-only">Add your custom slug</label>
+          {session && <label for="slug" class="sr-only">Add your custom slug</label>}
           <span id="shortLink">
             http://ir-a.online/
             <span class={session ? "text-black" : "text-blue-700"} id="slug">
