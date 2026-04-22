@@ -1,0 +1,165 @@
+<canvas id="heroBackground" class="-z-1 absolute top-0 left-0 max-w-full w-full"
+></canvas>
+
+<script>
+  interface URLTYPE {
+    long: string;
+    short: string;
+  }
+
+  const URL_DATA: URLTYPE[] = [
+    {
+      long: "https://gemini.google.com/u/1/app/6246991470531cc8?hl=es",
+      short: "https://ir-a/gemini",
+    },
+    {
+      long: "https://translate.google.com.ar/?sl=es&tl=en&text=palabraObjetivo&op=translate",
+      short: "https://ir-a/translate",
+    },
+    {
+      long: "https://gemini.google.com/u/1/app/f971e6d25347890a?hl=es",
+      short: "https://ir-a/A7rq3E",
+    },
+  ];
+
+  const MAX_CHANGES = 5;
+  const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+  const MAX_URLS = 20
+
+  const canvas = document.querySelector("#heroBackground") as HTMLCanvasElement;
+  const ctx = canvas.getContext("2d")!;
+
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+
+  canvas.setAttribute("width", windowWidth.toString());
+  canvas.setAttribute("height", windowHeight.toString());
+
+  interface ActiveURL {
+    url: string;
+    short: string;
+    displayURL: string[];
+    lane: number;
+    x: number;
+    y: number;
+    isTransforming: boolean;
+    transformIndex: number;
+    nextLetterTick: number;
+    changeCounts: string[]
+  }
+
+  let lastTime = 0;
+  let accumulation = 0;
+  let activeURLs: ActiveURL[] = [];
+
+  const speed = 28;
+  let spawnInterval = 0;
+
+  const metrics = ctx.measureText("A");
+  const characterWidth = metrics.width;
+
+  const fontSize = 30;
+  const totalLanes = Math.floor(canvas.height / fontSize);
+
+  const laneNextAvailableTime = new Array(totalLanes).fill(0);
+  const lanePadding = 100;
+
+  function draw(currentTime = 0) {
+    const deltaTime = (currentTime - lastTime) / 1000;
+    lastTime = currentTime;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (deltaTime > 0.1) return requestAnimationFrame(draw);
+
+    accumulation += deltaTime;
+
+    if (accumulation >= spawnInterval) {
+      if (activeURLs.length === MAX_URLS) return;
+
+      const availableLanes = [];
+      for (let i = 0; i < totalLanes; i++) {
+        const urlInLane = activeURLs.find(u => u.lane === i);
+          
+        if (!urlInLane) {
+          availableLanes.push(i);
+        } else {
+          const urlTail = urlInLane.x - (urlInLane.displayURL.length * characterWidth);
+          if (urlTail > lanePadding) {
+            availableLanes.push(i);
+          }
+        }
+      }
+
+      if (availableLanes.length > 0)  {
+        const laneIndex = availableLanes[Math.floor(Math.random() * availableLanes.length)];
+  
+        const data = URL_DATA[Math.floor(Math.random() * URL_DATA.length)];
+  
+        const xOffset = characterWidth * data.long.length + 200;
+        const y = laneIndex * fontSize + fontSize;
+  
+        const maxLen = Math.max(data.long.length, data.short.length);
+        const paddedLong = data.long.padEnd(maxLen, "\u00A0");
+        const paddedShort = data.short.padEnd(maxLen, "\u00A0");
+  
+        const newEntry: ActiveURL = {
+          url: paddedLong,
+          short: paddedShort,
+          displayURL: data.long.split(""),
+          lane: laneIndex,
+          x: -xOffset,
+          y,
+          isTransforming: false,
+          transformIndex: maxLen - 1,
+          nextLetterTick: 0,
+          changeCounts: new Array(maxLen).fill(0),
+        };
+  
+        activeURLs.push(newEntry);
+        accumulation = 0;
+        spawnInterval = 5
+      }
+    }
+
+    activeURLs = activeURLs.filter((item) => {
+      item.x += speed * deltaTime;
+
+      const centerX = canvas.width / 2;
+
+      if (!item.isTransforming && item.x > centerX - 500) {
+        item.isTransforming = true;
+        item.transformIndex = item.url.length - 1;
+        item.nextLetterTick = 0;
+      }
+
+      if (item.isTransforming) {
+        item.nextLetterTick += deltaTime;
+
+        if (item.nextLetterTick > 0.05 && item.transformIndex >= 0) {
+          if (item.changeCounts[item.transformIndex] < MAX_CHANGES) {
+            const randomChar = CHARS[Math.floor(Math.random() * CHARS.length)];
+            item.displayURL[item.transformIndex] = randomChar;
+            
+            item.changeCounts[item.transformIndex]++;
+          } else {
+            item.displayURL[item.transformIndex] = item.short[item.transformIndex];
+            
+            item.transformIndex--;
+            item.nextLetterTick = 0;
+          }
+        }
+      }
+
+      ctx.font = `12px monospace`;
+      ctx.globalAlpha = 0.2;
+      ctx.fillText(item.displayURL.join(""), item.x, item.y);
+
+      return item.x < canvas.width;
+    });
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+</script>
