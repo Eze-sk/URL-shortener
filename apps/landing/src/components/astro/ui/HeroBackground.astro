@@ -45,7 +45,7 @@
     isTransforming: boolean;
     transformIndex: number;
     nextLetterTick: number;
-    changeCounts: string[]
+    changeCounts: number[]
   }
 
   let lastTime = 0;
@@ -61,7 +61,6 @@
   const fontSize = 30;
   const totalLanes = Math.floor(canvas.height / fontSize);
 
-  const laneNextAvailableTime = new Array(totalLanes).fill(0);
   const lanePadding = 100;
 
   function draw(currentTime = 0) {
