@@ -1,5 +1,3 @@
-export const NEON_AUTH_URL = import.meta.env.SECRET_NEON_AUTH_URL
-
 export const EXPRESS_API = import.meta.env.PUBLIC_EXPRESS_API
 
 export const ENDPOINT = {
