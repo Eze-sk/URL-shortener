@@ -13,56 +13,35 @@ const session = Astro.locals.session;
 
   <nav class="flex-1 flex justify-center">
     <ul class="flex items-center gap-6">
-      <li><a href="https://github.com/Eze-sk">Github</a></li>
-      <li>
-        <a href="" class="flex items-center gap-1">
-          <span>Support</span>
-          <svg
-            width="24"
-            height="24"
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path stroke="none" d="M0 0h24v24H0z"></path>
-            <path
-              d="M19.5 12.572 12 20l-7.5-7.428A5 5 0 1 1 12 6.006a5 5 0 1 1 7.5 6.572"
-            ></path>
-          </svg>
+      <li data-backdrop>
+        <a class="hover:black" href="https://dashboard.ir-a.online">
+          Dashboard
         </a>
       </li>
-      <li>
-        <button>Dark mode</button>
+      <li data-backdrop>
+        <a class="hover:black" href="https://github.com/Eze-sk" target="_blank">
+          Github
+        </a>
       </li>
     </ul>
   </nav>
 
+  <div
+    id="menu-backdrop"
+    class={`
+      absolute bg-darkBlue/5 backdrop-blur-lg rounded
+      translate-x-[var(--left)] translate-y-[var(--top)]
+      left-0 top-0
+      w-[var(--width)] h-[var(--height)]
+      transition-all duration-500
+      ease-in-out opacity-0 -z-10
+    `}
+  >
+  </div>
+
   <div class="flex-1 flex justify-end items-center gap-4">
     {
-      session ? (
-        <a
-          href=""
-          class="bg-black text-white rounded py-2 px-4 flex gap-2 items-center"
-        >
-          Dashboard
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            >
-            <path
-              fill-rule="evenodd"
-              d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5"
-            />
-            <path
-              fill-rule="evenodd"
-              d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0z"
-            />
-          </svg>
-        </a>
-      ) : (
+      session ?? (
         <AuthControl client:only="preact">
           <AuthControlSkeleton slot="fallback" />
         </AuthControl>
@@ -70,3 +49,34 @@ const session = Astro.locals.session;
     }
   </div>
 </header>
+
+<script is:inline>
+  document.addEventListener("mouseover", (e) => {
+    const el = e.target.closest("[data-backdrop]");
+    if (!el) return;
+
+    const menuBackdrop = document.querySelector("#menu-backdrop");
+    if (!menuBackdrop) return;
+
+    const { left, top, width, height } = el.getBoundingClientRect();
+
+    menuBackdrop.style.setProperty("--left", `${left - 5}px`);
+    menuBackdrop.style.setProperty("--top", `${top - 2.9}px`);
+    menuBackdrop.style.setProperty("--width", `${width + 10}px`);
+    menuBackdrop.style.setProperty("--height", `${height + 5}px`);
+
+    menuBackdrop.style.opacity = "1";
+    menuBackdrop.style.visibility = "visible";
+  });
+
+  document.addEventListener("mouseout", (e) => {
+    const el = e.target.closest("[data-backdrop]");
+    if (!el) return;
+
+    const menuBackdrop = document.querySelector("#menu-backdrop");
+    if (menuBackdrop) {
+      menuBackdrop.style.opacity = "0";
+      menuBackdrop.style.visibility = "hidden";
+    }
+  });
+</script>

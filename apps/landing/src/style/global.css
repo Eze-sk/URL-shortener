@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
 
+@theme {
+  --color-darkBlue: oklch(0.3751 0.0352 247.23);
+}
+
 :root {
   --active: var(--color-blue-700)
 }
@@ -8,7 +12,8 @@
 body {
   font-family: 'Space Grotesk Variable', sans-serif;
   background-image: url("./bg-noise.png");
-  background-color: #FFFDF6;
+  background-color: oklch(0.9937 0.0095 93.57);
+  color: var(--color-darkBlue);
 }
 
 h1, h2, h3 {
@@ -36,12 +41,12 @@ button {
 }
 
 .custom-input {
-    border: none;
-    border-bottom: 1px solid black;
-    outline: none;
-    transition: border-color 0.3s;
-  }
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  transition: border-color 0.3s;
+}
 
-  .custom-input:focus {
-    border-bottom-color: var(--active);
-  }
+.custom-input:focus {
+  border-bottom-color: var(--active);
+}

@@ -4,7 +4,7 @@ import AuthDialog from "./AuthDialog";
 
 export function AuthControl() {
   return (
-    <div className="flex gap-4">
+    <div className="flex items-center gap-4">
       <LoginButton />
       <RegisterButton />
     </div>
@@ -27,8 +27,9 @@ export function LoginButton({ content, style }: LoginButtonProps) {
     <>
       <button
         onClick={handleOpen}
-        className="cursor-pointer"
+        className="hover:black"
         style={style}
+        data-backdrop
       >
         {content ? content : "Login"}
       </button>
@@ -48,7 +49,10 @@ export function RegisterButton() {
     <>
       <button
         onClick={handleOpen}
-        className="bg-black text-white rounded py-2 px-4 cursor-pointer"
+        className="
+          bg-darkBlue text-white rounded py-2 px-4 border-2 border-white
+          hover:border-darkBlue hover:text-darkBlue hover:bg-transparent transition-all duration-300
+        "
       >
         Sign Up
       </button>
