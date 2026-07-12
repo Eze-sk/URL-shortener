@@ -98,9 +98,8 @@ export default function AuthDialog(
 
 function Loader() {
   return (
-    <div className="flex items-center justify-center w-99.5 h-131 flex-col gap-2">
+    <div className="flex items-center justify-center w-99.5 h-131">
       <AnimateSpin />
-      <span>Loading...</span>
     </div>
   )
 }
