@@ -50,8 +50,11 @@ export function RegisterButton() {
       <button
         onClick={handleOpen}
         className="
-          bg-darkBlue text-white rounded py-2 px-4 border-2 border-white
-          hover:border-darkBlue hover:text-darkBlue hover:bg-transparent transition-all duration-300
+          bg-light-general dark:bg-dark-general text-dark-general dark:text-light-general 
+          py-2 px-4 border-2 border-white rounded
+          hover:border-light-general hover:dark:border-dark-general 
+          hover:text-light-general hover:dark:text-dark-general 
+          hover:bg-transparent transition-all duration-300
         "
       >
         Sign Up

@@ -79,7 +79,8 @@ export default function AuthDialog(
       ref={dialogRef}
       onClick={handleBackdropClick}
       className="
-        m-auto rounded-lg border border-gray-300 min-w-100
+        m-auto rounded-lg min-w-100
+        bg-light dark:bg-dark border border-light-general dark:border-dark-general
         backdrop:backdrop-blur-sm backdrop:bg-black/10 outline-none
       "
     >

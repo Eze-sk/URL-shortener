@@ -1,22 +1,39 @@
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --color-darkBlue: oklch(0.3751 0.0352 247.23);
+  --color-light: oklch(0.9937 0.0095 93.57);
+  --color-light-general: oklch(0.3751 0.0352 247.23);
+  --color-light-annotation: oklch(0.61 0.21 255);
+
+  --color-dark: oklch(0.22 0.02 247.23);
+  --color-dark-general: oklch(0.93 0.015 247.23);
+  --color-dark-annotation: oklch(0.68 0.19 255);
 }
 
 :root {
-  --active: var(--color-blue-700)
+  --active: var(--color-light-annotation);
+  --bg-noise: url("/bg-noise-light.png");
+}
+
+.dark {
+  --bg-noise: url("/bg-noise-dark.png");
 }
 
 body {
   font-family: 'Space Grotesk Variable', sans-serif;
-  background-image: url("./bg-noise.png");
-  background-color: oklch(0.9937 0.0095 93.57);
-  color: var(--color-darkBlue);
 }
 
-h1, h2, h3 {
+.bg-noise {
+  background-image: var(--bg-noise);
+  background-repeat: repeat;
+}
+
+h1,
+h2,
+h3 {
   font-family: 'Michroma', sans-serif;
 }
 
