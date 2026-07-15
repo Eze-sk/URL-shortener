@@ -1,12 +1,28 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const baseUrl = Astro.site || "https://ir-a.online";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const title = t("seo.title");
+const description = t("seo.description");
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalURL} />
+
+<link rel="alternate" hreflang="en" href={`${baseUrl}/`} />
+<link rel="alternate" hreflang="es" href={`${baseUrl}/es/`} />
+<link rel="alternate" hreflang="pt-br" href={`${baseUrl}/pt-br/`} />
+<link rel="alternate" hreflang="x-default" href={`${baseUrl}/`} />
+
 <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="shortcut icon" href="/favicon.ico" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 <meta name="apple-mobile-web-app-title" content="ir-a.online" />
 <link rel="manifest" href="/site.webmanifest" />
-
-<title>Shorty | Fast, Free & Anonymous URL Shortener</title>
-<meta name="description" content="
-  Shorty is the easiest way to shorten long URLs. Create tiny, shareable links in seconds. 
-  No registration required. Fast, secure, and reliable link management.
-">

@@ -5,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://ir-a.online',
   output: 'server',
   adapter: node({
     mode: 'standalone',
@@ -30,5 +31,13 @@ export default defineConfig({
     preact({
       compat: true,
     })
-  ]
+  ],
+
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['es', 'en', 'pt-BR'],
+    routing: {
+      prefixDefaultLocale: false,
+    }
+  }
 });

@@ -1,13 +1,17 @@
 ---
 import "@style/global.css";
-
 import "@fontsource-variable/space-grotesk/wght.css";
-
 import SEO from "@components/SEO.astro";
+
+interface Props {
+	lang: "en" | "es" | "pt";
+}
+
+const { lang } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />

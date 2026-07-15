@@ -1,11 +1,23 @@
+---
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const darkModeTitle = t("tagTitle.themetoggle.dark");
+const lightModeTitle = t("tagTitle.themetoggle.light");
+---
+
 <button
   type="button"
   id="themeToggle"
-  class="w-5 h-5"
-  title="Switch to dark theme"
+  class="w-6 h-7 flex items-center justify-center"
+  data-darkModeTitle={darkModeTitle}
+  data-lightModeTitle={lightModeTitle}
+  data-backdrop
 >
   <svg
-    class="w-full h-full"
+    class="w-5 h-5"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 16 16"
     fill="none"
@@ -41,33 +53,32 @@
     paused: true,
   });
 
-  const currentTheme =
-    localStorage.getItem("theme") ||
-    (document.documentElement.classList.contains("dark") ? "dark" : "light");
+  function updateThemeUI(isDark: boolean, animate = false) {
+    if ($themeToggle) {
+      $themeToggle.title = isDark
+        ? $themeToggle.getAttribute("data-darkModeTitle") ||
+          "Switch to dark theme"
+        : $themeToggle.getAttribute("data-lightModeTitle") ||
+          "Switch to light theme";
+    }
 
-  if (currentTheme === "dark") {
-    tween.progress(1);
-    $themeToggle.title = "Switch to light theme";
-  } else {
-    tween.progress(0);
-    $themeToggle.title = "Switch to light theme";
+    if (animate) {
+      isDark ? tween.play() : tween.reverse();
+    } else {
+      tween.progress(isDark ? 1 : 0);
+    }
   }
 
+  const isDarkInitial =
+    document.documentElement.classList.contains("dark") ||
+    localStorage.getItem("theme") === "dark";
+
+  updateThemeUI(isDarkInitial, false);
+
   $themeToggle?.addEventListener("click", () => {
-    const element = document.documentElement;
-
-    element.classList.toggle("dark");
-
-    const isDark = element.classList.contains("dark");
-
+    const isDark = document.documentElement.classList.toggle("dark");
     localStorage.setItem("theme", isDark ? "dark" : "light");
 
-    if (isDark) {
-      tween.play();
-      $themeToggle.title = "Switch to light theme";
-    } else {
-      tween.reverse();
-      $themeToggle.title = "Switch to dark theme";
-    }
+    updateThemeUI(isDark, true);
   });
 </script>

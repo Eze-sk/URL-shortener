@@ -1,20 +1,21 @@
 ---
-import HeroBackground from "@components/astro/ui/HeroBackground.astro";
 import ShorteningCard from "@components/astro/ui/ShorteningCard.astro";
-
 import Header from "./Header.astro";
+
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <div>
   <Header />
   <section class="flex items-center flex-col">
     <h1 class="text-8xl mt-10 text-center text-balance max-w-[11ch]">
-      Shorten links in one click
+      {t("hero.title")}
     </h1>
     <p class="mt-12 max-w-[40ch] text-center">
-      Transform complex links into quick and secure connections. 
-      The network architecture your projects need, 
-      optimized for the era of instant access.
+      {t("hero.paragraph")}
     </p>
     <ShorteningCard />
   </section>
