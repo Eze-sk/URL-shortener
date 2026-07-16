@@ -1,0 +1,112 @@
+---
+interface Props {
+  staticText: string;
+  dynamicText: string;
+  firstDynamic: string;
+}
+
+const { staticText, dynamicText, firstDynamic } = Astro.props;
+console.log(dynamicText);
+---
+
+<h1 id="title" class="text-8xl mt-10 flex flex-col items-center justify-center">
+  <span>{staticText}</span>
+  <span id="accessible-text" class="sr-only" aria-live="polite">
+    in one click
+  </span>
+  <span
+    id="dynamic-text"
+    data-dynamic={dynamicText}
+    class="text-light-annotation dark:text-dark-annotation
+      align-bottom inline-block relative overflow-hidden"
+    aria-hidden="true"
+  >
+    {firstDynamic}
+  </span>
+</h1>
+
+<style>
+  #dynamic-text {
+    min-height: 1.2em;
+  }
+</style>
+
+<script>
+  import gsap from "gsap";
+  import SplitText from "gsap/src/SplitText";
+
+  gsap.registerPlugin(SplitText);
+
+  const $dynamicText = document.querySelector(
+    "#dynamic-text",
+  ) as HTMLSpanElement;
+
+  const $accessibleText = document.querySelector(
+    "#accessible-text",
+  ) as HTMLSpanElement;
+
+  const phrases = JSON.parse($dynamicText.dataset.dynamic ?? '["100% free"]');
+
+  let currentIndex = 0;
+
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  function animatePhrase() {
+    const currentPhrase = phrases[currentIndex];
+
+    $dynamicText.textContent = currentPhrase;
+
+    if ($accessibleText) {
+      $accessibleText.textContent = currentPhrase;
+    }
+
+    if (prefersReducedMotion) {
+      gsap
+        .timeline({
+          onComplete: () => {
+            currentIndex = (currentIndex + 1) % phrases.length;
+            gsap.delayedCall(2, animatePhrase);
+          },
+        })
+        .fromTo($dynamicText, { opacity: 0 }, { opacity: 1, duration: 0.5 })
+        .to({}, { duration: 2 })
+        .to($dynamicText, { opacity: 0, duration: 0.5 });
+
+      return;
+    }
+
+    const split = new SplitText($dynamicText, { type: "words" });
+
+    const tl = gsap.timeline({
+      onComplete: () => {
+        split.revert();
+        currentIndex = (currentIndex + 1) % phrases.length;
+        animatePhrase();
+      },
+    });
+
+    tl.from(split.words, {
+      y: 100,
+      opacity: 0,
+      rotation: "random(-5, 5)",
+      duration: 1.2,
+      ease: "back.out(1.7)",
+      stagger: 0.25,
+    });
+
+    tl.to({}, { duration: 1.5 });
+
+    tl.to(split.words, {
+      y: -100,
+      opacity: 0,
+      rotation: "random(-5, 5)",
+      duration: 0.8,
+      ease: "power2.in",
+      stagger: 0.1,
+    });
+  }
+
+  animatePhrase();
+</script>

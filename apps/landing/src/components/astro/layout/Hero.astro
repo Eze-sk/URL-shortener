@@ -1,6 +1,7 @@
 ---
 import ShorteningCard from "@components/astro/ui/ShorteningCard.astro";
 import Header from "./Header.astro";
+import Title from "../ui/Title.astro";
 
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
@@ -11,9 +12,11 @@ const t = useTranslations(lang);
 <div>
   <Header />
   <section class="flex items-center flex-col">
-    <h1 class="text-8xl mt-10 text-center text-balance max-w-[11ch]">
-      {t("hero.title")}
-    </h1>
+    <Title
+      staticText={t("hero.title.static")}
+      dynamicText={t("hero.title.dynamic")}
+      firstDynamic={t("hero.title.firstDynamic")}
+    />
     <p class="mt-12 max-w-[40ch] text-center">
       {t("hero.paragraph")}
     </p>

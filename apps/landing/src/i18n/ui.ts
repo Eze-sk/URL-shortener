@@ -16,7 +16,9 @@ export const ui = {
     "header.dashboard": "Dashboard",
     "header.login": "Log In",
     "header.signUp": "Sign Up",
-    "hero.title": "Shorten links in one click",
+    "hero.title.static": "Shorten your links",
+    "hero.title.dynamic": "[\"instantly\", \"100% free\", \"without signup\", \"in one click\", \"hassle-free\"]",
+    "hero.title.firstDynamic": "instantly",
     "hero.paragraph": `
       Transform complex links into fast and secure connections. 
       The infrastructure your projects need, optimized for instant access.
@@ -55,7 +57,9 @@ export const ui = {
     "header.dashboard": "Dashboard",
     "header.login": "Iniciar sesión",
     "header.signUp": "Registrarse",
-    "hero.title": "Acorta enlaces con un solo clic",
+    "hero.title.static": "Acorta tus enlaces",
+    "hero.title.dynamic": "[\"al instante\", \"100% gratis\", \"sin registrarte\", \"en un clic\", \"sin rodeos\"]",
+    "hero.title.firstDynamic": "al instante",
     "hero.paragraph": `
       Transforma enlaces complejos en conexiones rápidas y seguras. 
       La infraestructura que tus proyectos necesitan, optimizada para el acceso instantáneo.
@@ -94,7 +98,9 @@ export const ui = {
     "header.dashboard": "Dashboard",
     "header.login": "Entrar",
     "header.signUp": "Cadastrar-se",
-    "hero.title": "Encurte links com um único clique",
+    "hero.title.static": "Encurte seus links",
+    "hero.title.dynamic": "[\"num instante\", \"100% grátis\", \"sem cadastro\", \"com um clique\", \"sem complicações\"]",
+    "hero.title.firstDynamic": "num instante",
     "hero.paragraph": `
       Transforme links complexos em conexões rápidas e seguras. 
       A infraestrutura que seus projetos precisam, otimizada para o acesso instantâneo.
