@@ -1,39 +1,54 @@
 import z from "zod"
+import { messages } from "./messages"
 
-export const urlScheme = z
-  .url("Must be a valid URL.")
-  .min(12, "The URL is too short to be valid.")
-  .max(2000, "The URL exceeds the allowed limit of 2000 characters")
+export type SupportedLang = keyof typeof messages
 
-export type urlSchemeType = z.infer<typeof urlScheme>
+export function createURLScheme(lang: SupportedLang = 'en') {
+  const m = messages[lang] || messages.en
 
-export const customData = z.object({
-  original_url: urlScheme
-    .or(z.literal("")),
-  slug: z
-    .string("It must be a valid slug")
-    .min(2, "The slug must have at least 2 character.")
-    .max(50, "The slug has a maximum of 50 characters.")
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use only lowercase letters, numbers, and hyphens (no double or trailing hyphens)."),
-  expires_at: z.iso
-    .datetime("The expiration date must be in a valid ISO format.")
-    .optional()
-    .nullable()
-})
+  return z
+    .url(m.urlRequired)
+    .min(12, m.urlMin)
+    .max(2000, m.urlMax)
+}
 
-export type CustomDataType = z.infer<typeof customData>
+export type TypeURLScheme = z.infer<typeof createURLScheme>
 
-export const loginScheme = z.object({
-  email: z
-    .email("It must be a valid email address.")
-    .min(8, "The password must be at least 8 characters long.")
-    .max(320, "The email exceeds the 320 character limit."),
-  password: z
-    .string()
-    .min(4, "The password must be at least 8 characters long.")
-    .max(255, "The password exceeds the 255 character limit")
-    .regex(/[A-Z]/, "The password must contain at least one uppercase letter")
-    .regex(/[^a-zA-Z0-0]/, "The password must contain at least one special character")
-})
+export function custonURLScheme(lang: SupportedLang = 'en') {
+  const m = messages[lang] || messages.en
 
-export type UserLoginType = z.infer<typeof loginScheme>
+  return z.object({
+    original_url: createURLScheme(lang)
+      .or(z.literal("")),
+    slug: z
+      .string(m.slug)
+      .min(2, m.slugMin)
+      .max(50, m.slugMax)
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, m.slugRegex),
+    expires_at: z.iso
+      .datetime(m.slugExpires)
+      .optional()
+      .nullable()
+  })
+}
+
+export type TypeCustomData = z.infer<typeof custonURLScheme>
+
+export function AuthScheme(lang: SupportedLang = 'en') {
+  const m = messages[lang] || messages.en
+
+  return z.object({
+    email: z
+      .email(m.authEmail)
+      .min(6, m.authEmailMin)
+      .max(254, m.authEmailMax),
+    password: z
+      .string()
+      .min(8, m.authPasswordMin)
+      .max(255, m.authPasswordMax)
+      .regex(/[A-Z]/, m.authPasswordRegex1)
+      .regex(/[^a-zA-Z0-0]/, m.authPasswordRegex2)
+  })
+}
+
+export type TypeUserLogin = z.infer<typeof AuthScheme>

@@ -1,10 +1,13 @@
 import { nanoid } from "nanoid";
-import { urlScheme, customData } from "@repo/schemes";
+import { custonURLScheme, createURLScheme } from "@repo/schemes";
 import { verifyUrl } from "@utils/verifyUrl";
 import type { Request, Response } from 'express';
 import { urlResourceModel } from "@model/urlResource";
 import { logInternalError } from "@model/logInternalError";
 import type { ShortenedURLType } from "@typescript/DatabaseSchema";
+
+const urlScheme = createURLScheme("en")
+const customData = custonURLScheme("en")
 
 export class urlResourceController {
   static async create(req: Request, res: Response) {
