@@ -11,3 +11,12 @@ export function useTranslations(lang: keyof typeof ui) {
     return ui[lang][key] || ui[defaultLang][key]
   }
 }
+
+export function useClientTranslation(lang: keyof typeof ui) {
+  return function t(key: keyof typeof ui[typeof defaultLang]) {
+    return ui[lang]?.[key] || ui[defaultLang][key]
+  }
+}
+
+type UseTranslationsFn = typeof useTranslations;
+export type TranslateFn = ReturnType<UseTranslationsFn>;
