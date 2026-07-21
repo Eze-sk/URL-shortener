@@ -1,8 +1,4 @@
 ---
-import { LoginButton } from "@components/preact/auth/AuthButton.tsx";
-import CustomizationSettings from "./CustomizationSettings.astro";
-import LoginButtonSkeleton from "@components/astro/skeleton/LoginButtonSkeleton.astro";
-
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
@@ -16,13 +12,13 @@ const session = Astro.locals.session;
     <div class="flex gap-4 items-center">
       <div class="flex flex-col">
         <label for="originalUrl" class="text-ms font-light">
-          {t("cardShortener.paste.label")}
+          {t("shortener.paste.label")}
         </label>
         <input
           type="text"
           name="originalUrl"
           id="originalUrl"
-          placeholder={t("cardShortener.paste.label")}
+          placeholder={t("shortener.paste.label")}
           class="p-2 w-75 border rounded border-light-general dark:border-dark-general
             placeholder-gray-400 dark:placeholder-gray-500"
         />
@@ -32,14 +28,14 @@ const session = Astro.locals.session;
         type="submit"
         name="shortenBt"
         id="shortenBt"
-        title={t("cardShortener.generated.label")}
+        title={t("shortener.generated.label")}
         class="bg-light-general dark:bg-dark-general text-dark-general dark:text-light-general
           py-2.25 px-4 flex gap-1 self-end font-bold border-2 border-white rounded activeButton
           hover:border-light-general hover:dark:border-dark-general
           hover:text-light-general hover:dark:text-dark-general
           hover:bg-transparent transition-all duration-300"
       >
-        <span class="shortenBt-text">{t("cardShortener.button")}</span>
+        <span class="shortenBt-text">{t("shortener.button")}</span>
         <svg
           class="shortenBt-svg"
           width="24"
@@ -56,9 +52,7 @@ const session = Astro.locals.session;
       </button>
 
       <div class="flex flex-col group">
-        <span class="text-ms font-light"
-          >{t("cardShortener.generated.label")}</span
-        >
+        <span class="text-ms font-light">{t("shortener.generated.label")}</span>
         <span
           class="p-2 relative flex items-center w-75 border rounded border-light-general dark:border-dark-general"
         >
@@ -104,143 +98,7 @@ const session = Astro.locals.session;
     </div>
     <div class="flex justify-between mt-1">
       <small class="text-red-400 text-sm" id="errorMessage"></small>
-      {
-        session ? (
-          <CustomizationSettings client:load />
-        ) : (
-          <LoginButton
-            client:only="preact"
-            content="Log in to personalize"
-            style={{
-              fontSize: "14px",
-              fontWeight: 300,
-            }}
-          >
-            <LoginButtonSkeleton slot="fallback" />
-          </LoginButton>
-        )
-      }
     </div>
   </form>
 </section>
 
-<script>
-  import { api } from "@lib/api.ts";
-  import { ENDPOINT } from "@consts/config";
-  import { urlScheme } from "@repo/schemes";
-  import { toast } from "@components/wc/Toast.ts";
-
-  const $formShorten = document.getElementById(
-    "formShorten",
-  ) as HTMLFormElement;
-  const $inputUrl = document.getElementById("originalUrl") as HTMLInputElement;
-
-  const $shortLink = document.getElementById("shortLink") as HTMLElement;
-  const $copyLink = document.getElementById("copyLink") as HTMLButtonElement;
-
-  const $errorMessage = document.getElementById("errorMessage") as HTMLElement;
-
-  const $slug = document.getElementById("slug") as HTMLElement;
-
-  $inputUrl.addEventListener("input", () => {
-    $errorMessage.textContent = "";
-  });
-
-  $formShorten.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const buttonPress = event.submitter as HTMLButtonElement;
-
-    if (!buttonPress || buttonPress.id !== "shortenBt") return;
-
-    const form = event.target as HTMLFormElement;
-    const shortenBtText = form.querySelector(
-      ".shortenBt-text",
-    ) as HTMLButtonElement;
-    const shortenBtSvg = form.querySelector(
-      ".shortenBt-svg",
-    ) as HTMLButtonElement;
-    const originalButtonText = shortenBtText.textContent;
-
-    const data = new FormData(form);
-    const originalUrl = data.get("originalUrl");
-
-    const urlValidation = urlScheme.safeParse(originalUrl);
-
-    if (!urlValidation.success) {
-      $errorMessage.textContent = urlValidation.error!.issues[0].message;
-      return;
-    }
-
-    try {
-      shortenBtText.disabled = true;
-      shortenBtText.innerHTML = "<ws-animate-spin><ws-animate-spin/>";
-      shortenBtSvg.style.display = "none";
-
-      const { data } = await api.post(ENDPOINT.create, {
-        original_url: urlValidation.data,
-      });
-
-      const slugValue = data.resultCreatingURL.slug;
-
-      if ($slug instanceof HTMLInputElement) {
-        $slug.value = slugValue;
-      } else {
-        $slug.textContent = slugValue;
-      }
-
-      sessionStorage.setItem("slug", slugValue);
-      sessionStorage.setItem("originalUrl", urlValidation.data);
-
-      toast({
-        message: "The URL has been successfully shortened!",
-        position: "bottom-center",
-        type: "success",
-      });
-    } catch (err) {
-      console.error(err);
-      toast({
-        message: `Server error: ${err}`,
-        position: "bottom-center",
-        type: "error",
-      });
-    } finally {
-      shortenBtText.disabled = false;
-      shortenBtText.textContent = originalButtonText;
-      shortenBtSvg.style.display = "flex";
-    }
-  });
-
-  $copyLink.addEventListener("click", async () => {
-    const children = Array.from($shortLink.childNodes);
-
-    const linkParts = children.map((node) => {
-      if (node instanceof HTMLElement) {
-        if (node instanceof HTMLInputElement) {
-          return node.value;
-        }
-
-        return node.textContent?.trim() || "";
-      }
-
-      return node.textContent?.trim() || "";
-    });
-
-    const link = linkParts.join("").replace(/\s+/g, "");
-
-    try {
-      await navigator.clipboard.writeText(link);
-      toast({
-        message: "URL copied",
-        position: "bottom-center",
-        type: "success",
-      });
-    } catch (err) {
-      toast({
-        message: `Error copying: ${err}`,
-        position: "bottom-center",
-        type: "error",
-      });
-    }
-  });
-</script>

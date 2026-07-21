@@ -4,8 +4,8 @@ import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const darkModeTitle = t("tagTitle.themetoggle.dark");
-const lightModeTitle = t("tagTitle.themetoggle.light");
+const darkModeTitle = t("title.themeToggle.dark");
+const lightModeTitle = t("title.themeToggle.light");
 ---
 
 <button

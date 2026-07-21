@@ -38,9 +38,9 @@ const listLanguages: MenuList[] = [
 <MenuWrapper
   menuList={listLanguages}
   class="w-6 h-7 flex items-center justify-center"
-  titleForOpen={t("tagTitle.languageButton.open")}
-  titleForClosed={t("tagTitle.languageButton.close")}
-  client:only="preact"
+  titleForOpen={t("title.languageToggle.open")}
+  titleForClosed={t("title.languageToggle.close")}
+  client:load
   data-backdrop
 >
   <svg

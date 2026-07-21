@@ -1,7 +1,6 @@
 ---
 import Logo from "@components/astro/ui/Logo.astro";
-import { AuthControl } from "@components/preact/auth/AuthButton.tsx";
-import AuthControlSkeleton from "@components/astro/skeleton/AuthControlSkeleton.astro";
+import { AuthContainer } from "@components/preact/auth/AuthRoot";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
@@ -18,16 +17,13 @@ const session = Astro.locals.session;
   <nav class="flex-1 flex justify-center">
     <ul class="flex items-center gap-6">
       <li data-backdrop>
-        <a
-          title={t("tagTitles.dashboard")}
-          href="https://dashboard.ir-a.online"
-        >
+        <a title={t("title.dashboard")} href="https://dashboard.ir-a.online">
           {t("header.dashboard")}
         </a>
       </li>
       <li data-backdrop>
         <a
-          title={t("tagTitles.github")}
+          title={t("title.github")}
           href="https://github.com/Eze-sk"
           target="_blank"
         >
@@ -38,12 +34,6 @@ const session = Astro.locals.session;
   </nav>
 
   <div class="flex-1 flex justify-end items-center gap-4">
-    {
-      session ?? (
-        <AuthControl client:only="preact">
-          <AuthControlSkeleton slot="fallback" />
-        </AuthControl>
-      )
-    }
+    <AuthContainer client:load lang={lang} />
   </div>
 </header>

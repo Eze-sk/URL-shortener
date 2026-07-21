@@ -6,13 +6,12 @@ interface Props {
 }
 
 const { staticText, dynamicText, firstDynamic } = Astro.props;
-console.log(dynamicText);
 ---
 
 <h1 id="title" class="text-8xl mt-10 flex flex-col items-center justify-center">
   <span>{staticText}</span>
   <span id="accessible-text" class="sr-only" aria-live="polite">
-    in one click
+    {firstDynamic}
   </span>
   <span
     id="dynamic-text"
