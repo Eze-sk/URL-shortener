@@ -1,22 +1,19 @@
 import { createPortal } from "preact/compat";
 import { lazy, Suspense } from 'preact/compat';
-import { useEffect, useRef, useState, type Dispatch, type StateUpdater } from "preact/hooks";
+import { useContext, useEffect, useRef, useState } from "preact/hooks";
 
-import type { Type } from './AuthForm';
 import AnimateSpin from '@components/preact/animations/AnimateSpin.tsx';
+import { AuthContext } from "./AuthRoot";
 
 const AuthForm = lazy(() => import('./AuthForm'))
 
-export default function AuthDialog(
-  {
-    type,
-    isOpen,
-    setOpen
-  }: {
-    type: Type,
-    isOpen: boolean,
-    setOpen: Dispatch<StateUpdater<boolean>>
-  }) {
+export default function AuthDialog() {
+  const context = useContext(AuthContext)
+
+  if (!context) return
+
+  const { setOpen, open } = context
+
   const dialogRef = useRef<HTMLDialogElement | null>(null)
   const [container, setContainer] = useState<HTMLElement | null>(null);
 
@@ -31,7 +28,7 @@ export default function AuthDialog(
 
     if (!dialog) return
 
-    if (isOpen) {
+    if (open) {
       dialog.showModal();
     } else {
       dialog.close();
@@ -44,7 +41,7 @@ export default function AuthDialog(
 
     dialog.addEventListener('close', handleClose);
     return () => dialog.removeEventListener('close', handleClose);
-  }, [isOpen])
+  }, [open])
 
 
   const handleBackdropClick = (e: MouseEvent) => {
@@ -61,33 +58,20 @@ export default function AuthDialog(
     }
   };
 
-  const typeEnum: Record<Type, {
-    message: string
-  }> = {
-    register: {
-      message: "Create your account with"
-    },
-    login: {
-      message: "Log in with"
-    }
-  }
-
-  const getMessage = typeEnum[type].message
-
   return createPortal(
     <dialog
       ref={dialogRef}
       onClick={handleBackdropClick}
       className="
-        m-auto rounded-lg min-w-100
+        m-auto rounded-lg max-w-135 max-h-145 w-full h-full
         bg-light dark:bg-dark border border-light-general dark:border-dark-general
         backdrop:backdrop-blur-sm backdrop:bg-black/10 outline-none
       "
     >
       {
-        isOpen && (
+        open && (
           <Suspense fallback={<Loader />}>
-            <AuthForm message={getMessage} type={type} onClose={handleClose} />
+            <AuthForm onClose={handleClose} />
           </Suspense>
         )
       }
@@ -97,9 +81,16 @@ export default function AuthDialog(
 }
 
 function Loader() {
+  const context = useContext(AuthContext)
+
+  if (!context) return
+
+  const { t } = context
+
   return (
-    <div className="flex items-center justify-center w-99.5 h-131">
+    <div className="flex flex-col gap-2 items-center justify-center w-full h-full">
       <AnimateSpin />
+      <span class="text-light-general dark:text-dark-general">{t("loading")}</span>
     </div>
   )
 }
